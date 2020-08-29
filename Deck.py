@@ -5,23 +5,21 @@ class Deck:
     
     def __init__(self):
         self.cardList = []
-        self.colorList = ['red','blue','green']
-        self.fillList = ['solid', 'shaded', 'clear']
-        self.shapeList = ['circle', 'triangle','square']
-        self.numList = ['1','2','3']
 
-        for color in self.colorList:
-            for fill in self.fillList:
-                for shape in self.shapeList:
-                    for number in self.numList:
+        for color in range(1,4):
+            for fill in range(1,4):
+                for shape in range(1,4):
+                    for number in range(1,4):
                         self.cardList.append(Card(color, fill, shape, number))
+        self.shuffle()
 
+    #Gets the number of cards that are left
     def getNumberOfCards(self):
         return len(self.cardList)
 
-    #takes in an integer (1-81) and returns the index at that card
-    def getCard(self, CardNumber):
-        return self.cardList[CardNumber]
+    #Removes the top card from the deck and returns it
+    def draw(self):
+        return self.cardList.pop()
 
     #shuffle method with three shuffles
     def shuffle(self):
