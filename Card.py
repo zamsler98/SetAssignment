@@ -17,3 +17,9 @@ class Card:
         return self.number
     def getAll(self):
         return (self.color, self.fill,self.shape,self.number)
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, Card):
+            return self.color == other.color and self.fill == other.fill and self.shape == other.shape and self.number == other.number
+        return False
