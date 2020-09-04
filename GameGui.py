@@ -21,15 +21,56 @@ def getAllSets(cards):
 					res.append((cards[i],cards[j],cards[k]))
 	return res
 
+class Grid:
+	def __init__(self, canvas):
+		self.canvas = canvas
+		self.images = [None] * 12
+		self.cardsDisplayed = [None] * 12
+
+	def displayNewCard(self, card, index):
+		if (len(self.images) > index):
+			self.canvas.delete(self.images[index])
+		self.cardsDisplayed[index] = card
+		x,y = self.getCoordsByIndex(index)
+		self.images[index] = self.canvas.create_image(x,y,image = Sprites.getNormalSprite(card),anchor=NW)
+
+	def getCoordsByIndex(self,index):
+		return (10 + 200*(index % 4),10 + 150*(index // 4))
+
+	def getClickedCard(self, x, y):
+		for i in range(12):
+			imageX, imageY = self.getCoordsByIndex(i)
+			if x >= imageX and x <= imageX + 200:
+				if y >= imageY and y <= imageY + 150:
+					return self.cardsDisplayed[i]
+
+	def selectCard(self, card):
+		index = self.cardsDisplayed.index(card)
+		self.canvas.delete(self.images[index])
+		x,y = self.getCoordsByIndex(index)
+		self.images[index] = self.canvas.create_image(x,y,image =Sprites.getSelectedSprite(card),anchor=NW)
+
+	def unselectCard(self, card):
+		index = self.cardsDisplayed.index(card)
+		self.canvas.delete(self.images[index])
+		x,y = self.getCoordsByIndex(index)
+		self.images[index] = self.canvas.create_image(x,y,image=Sprites.getNormalSprite(card),anchor=NW)
+
+	def removeCard(self,card):
+		index = self.cardsDisplayed.index(card)
+		self.canvas.delete(self.images[index])
+
+	def getIndexOfCard(self, card):
+		return self.cardsDisplayed.index(card)
+
 class GameBoard:
 	
 	def __init__(self, top):
 		self.chosenCards = []
-		self.cardsDisplayed = [None] * 12
-		self.images = [None] * 12
 		self.deck = Deck()
 
 		self.canvas = Canvas(top, width=900,height=500,bg='white')
+		self.grid = Grid(self.canvas)
 		self.canvas.focus_set()
 		self.canvas.bind("t",self.test)
 		self.canvas.bind("h",self.hint)
@@ -41,49 +82,53 @@ class GameBoard:
 
 	def newCard(self, index):
 		card = self.deck.draw()
-		self.cardsDisplayed[index] = card
-		x,y = GameBoard.getCoordsByIndex(index)
-		self.images[index] = self.canvas.create_image(x,y,image = Sprites.getSprite(card),anchor=NW)
-
-	def getCoordsByIndex(index):
-		return (10 + 200*(index % 4),10 + 150*(index // 4))
+		self.grid.displayNewCard(card,index)
 
 	def test(self,event):
-		print(len(getAllSets(self.cardsDisplayed)))
+		print(len(getAllSets(self.grid.cardsDisplayed)))
 
 	def hint(self,event):
-		allsets = getAllSets(self.cardsDisplayed)
+		allsets = getAllSets(self.grid.cardsDisplayed)
 		if len(allsets) > 0:
-
-			print(self.cardsDisplayed.index(allsets[0][0]),self.cardsDisplayed.index(allsets[0][1]),self.cardsDisplayed.index(allsets[0][2]))
+			print(self.grid.cardsDisplayed.index(allsets[0][0]),self.grid.cardsDisplayed.index(allsets[0][1]),self.grid.cardsDisplayed.index(allsets[0][2]))
 
 	def clicked(self, event):
-	    card = self.getClickedCard(event.x, event.y)
+	    card = self.grid.getClickedCard(event.x, event.y)
+	    if card is None:
+	    	return
 	    if card not in self.chosenCards:
 	    	self.chosenCards.append(card)
-	    print(len(self.chosenCards), "chosen")
+	    	self.grid.selectCard(card)
+	    else:
+	    	self.chosenCards.remove(card)
+	    	self.grid.unselectCard(card)
+	    	return
 
 	    if len(self.chosenCards) == 3:
 	    	if isSet(self.chosenCards[0],self.chosenCards[1],self.chosenCards[2]):
 	    		for i in range(3):
-	    			curIndex = self.cardsDisplayed.index(self.chosenCards[i])
-	    			self.canvas.delete(self.images[curIndex])
+	    			curIndex = self.grid.getIndexOfCard(self.chosenCards[i])
 	    			self.newCard(curIndex)
 	    		print("This is a set,",self.deck.getNumberOfCards(),"cards remaining")
 	    	else:
+	    		for card in self.chosenCards:
+	    			self.grid.unselectCard(card)
 	    		print("Not a set")
 	    	self.chosenCards = []
-	    #print("Card clicked",card.getAll())
 
-	def getClickedCard(self, x, y):
-		for i in range(12):
-			imageX, imageY = GameBoard.getCoordsByIndex(i)
-			if x >= imageX and x <= imageX + 200:
-				if y >= imageY and y <= imageY + 150:
-					return self.cardsDisplayed[i]
+	
+
+#Setting the taskbar icon
+#https://stackoverflow.com/a/34547834/7255437
+import ctypes
+myappid = u'mycompany.myproduct.subproduct.version' # arbitrary string
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 top = Tk()
 Sprites.loadSprites()
+top.title("")
+top.iconbitmap("res/gameIcon.ico")
+
 
 gameBoard = GameBoard(top)
 
