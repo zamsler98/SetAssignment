@@ -6,7 +6,7 @@ class Deck:
     def __init__(self):
         self.cardList = []
 
-        for color in range(1,2):
+        for color in range(1,4):
             for fill in range(1,4):
                 for shape in range(1,4):
                     for number in range(1,4):
