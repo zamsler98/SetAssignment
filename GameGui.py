@@ -97,6 +97,8 @@ class Grid:
 						self.displayNewCard(self.cardsDisplayed[i],index)
 						self.removeCardAtIndex(i)
 						break
+			else:
+				self.removeCardAtIndex(index)
 			
 class Timer:
 	def __init__(self):
