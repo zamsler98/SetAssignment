@@ -219,21 +219,21 @@ class GameBoard:
 	def endGame(self):
 		self.canvas.delete("all")
 		print(self.timesPerSet)
-		label = Message(self.canvas, text="Sets found: "+str(len(self.timesPerSet)),font=("Times","16"),bg='white',width=500)
+		label = Message(self.canvas, text="Sets found: "+str(len(self.timesPerSet)),font=("Constantia Bold Italic","16"),bg='light gray',width=500)
 		self.canvas.create_window(50, 50, anchor=NW, window=label)
 		if len(self.timesPerSet) == 0:
 			self.timesPerSet.append(0)
-		label = Message(self.canvas, text="Total time taken: "+str(round(sum(self.timesPerSet))) +" seconds",font=("Times","16"),bg='white',width=500)
+		label = Message(self.canvas, text="Total time taken: "+str(round(sum(self.timesPerSet))) +" seconds",font=("Constantia Bold Italic","16"),bg='light gray',width=500)
 		self.canvas.create_window(50, 100, anchor=NW, window=label)
-		label = Message(self.canvas, text="Average time per set: "+str(round(sum(self.timesPerSet)/len(self.timesPerSet),2)) +" seconds",font=("Times","16"),bg='white',width=500)
+		label = Message(self.canvas, text="Average time per set: "+str(round(sum(self.timesPerSet)/len(self.timesPerSet),2)) +" seconds",font=("Constantia Bold Italic","16"),bg='light gray',width=500)
 		self.canvas.create_window(50, 150, anchor=NW, window=label)
-		label = Message(self.canvas, text="Fastest time to find a set: "+str(round(min(self.timesPerSet),2)) +" seconds",font=("Times","16"),bg='white',width=500)
+		label = Message(self.canvas, text="Fastest time to find a set: "+str(round(min(self.timesPerSet),2)) +" seconds",font=("Constantia Bold Italic","16"),bg='light gray',width=500)
 		self.canvas.create_window(50, 200, anchor=NW, window=label)
-		label = Message(self.canvas, text="Longest time to find a set: "+str(round(max(self.timesPerSet),2)) +" seconds",font=("Times","16"),bg='white',width=500)
+		label = Message(self.canvas, text="Longest time to find a set: "+str(round(max(self.timesPerSet),2)) +" seconds",font=("Constantia Bold Italic","16"),bg='light gray',width=500)
 		self.canvas.create_window(50, 250, anchor=NW, window=label)
-		label = Message(self.canvas, text="Number of mistakes made: "+str(self.mistakes),font=("Times","16"),bg='white',width=500)
+		label = Message(self.canvas, text="Number of mistakes made: "+str(self.mistakes),font=("Constantia Bold Italic","16"),bg='light gray',width=500)
 		self.canvas.create_window(50, 300, anchor=NW, window=label)
-		label = Message(self.canvas, text="Number of times hint was used: "+str(self.hintNumber),font=("Times","16"),bg='white',width=500)
+		label = Message(self.canvas, text="Number of times hint was used: "+str(self.hintNumber),font=("Constantia Bold Italic","16"),bg='light gray',width=500)
 		self.canvas.create_window(50, 350, anchor=NW, window=label)
 		self.grid = Grid(self.canvas)
 
@@ -242,7 +242,7 @@ class TimedGame(GameBoard):
 		GameBoard.__init__(self,canvas,cardsRemainingLabel)
 		self.canvas.config(width=845,height=610)
 		self.canvas.create_rectangle(820,10,840,445)
-		self.bar = self.canvas.create_rectangle(820,10,840,445,fill='red')
+		self.bar = self.canvas.create_rectangle(820,10,840,445,fill='#ffa372')
 		self.lengthOfBar = 435
 		self.timeLimit = 30
 		self.decksCompleted = 0
@@ -256,7 +256,7 @@ class TimedGame(GameBoard):
 				percent = elapsed / self.timeLimit
 				self.canvas.delete(self.bar)
 				y = 10 + int(self.lengthOfBar * percent)
-				self.bar = self.canvas.create_rectangle(820,y,840,445,fill='red')
+				self.bar = self.canvas.create_rectangle(820,y,840,445,fill='#ffa372')
 				self.canvas.after(10,self.updateBar)
 			else:
 				self.endGame()
@@ -276,7 +276,7 @@ class TimedGame(GameBoard):
 
 	def endGame(self):
 		super().endGame()
-		label = Message(self.canvas, text="Decks fully completed: "+str(self.decksCompleted),font=("Times","16"),bg='white',width=500)
+		label = Message(self.canvas, text="Decks fully completed: "+str(self.decksCompleted),font=("Constantia Bold Italic","16"),bg='light gray',width=500)
 		self.canvas.create_window(50, 0, anchor=NW, window=label)
 
 class GUI:
@@ -288,35 +288,46 @@ class GUI:
 		ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 		top = Tk()
-		top.configure(background='white')
+		top.configure(background='light gray')
 		Sprites.loadSprites()
-		top.title("")
+		top.title("SET")
 		top.iconbitmap("res/gameIcon.ico")
+		top.resizable(False,False)
 
-		self.canvas = Canvas(top, width=810,height=610,bg='white',highlightthickness=0)
+		self.canvas = Canvas(top, width=810,height=610,bg='light gray',highlightthickness=0)
 		self.canvas.focus_set()
-		self.canvas.pack(side=LEFT)
 
-		self.menu = Canvas(top,width=100,height=610,bg='white',highlightthickness=0)
-		self.menu.pack(side=LEFT)
+		self.menu = Canvas(top,width=110,height=610,bg='light gray',highlightthickness=0)
 
-		self.cardsRemainingLabel = Label(self.menu, text='',bg='white',font=("Times", "24", "bold"))
+		self.buttons = Canvas(top,width=810,height=50,bg='light gray',highlightthickness=0)
+
+		self.canvas.grid(column=0,row=0)
+		self.menu.grid(column=1,row=0)
+		self.buttons.grid(row=1)
+
+		self.cardsRemainingLabel = Label(self.menu, text='',bg='light gray',font=("Constantia Bold Italic", "24", "bold"))
 		self.menu.create_window(10, 10, anchor=NW, window=self.cardsRemainingLabel)
 
-		label = Message(self.menu, text="Cards remaining in the deck",font=("Times","12"),bg='white')
+		label = Message(self.menu, text="Cards remaining in the deck",font=("Constantia Bold Italic","12"),bg='light gray')
 		self.menu.create_window(5, 50, anchor=NW, window=label)
 
 		
 		self.gameBoard = GameBoard(self.canvas, self.cardsRemainingLabel)
 
-		self.hintButton = Button(self.menu,text="Hint",command = self.hint)
-		self.menu.create_window(10, 300, anchor=NW, window=self.hintButton)
+		self.hintButton = Button(self.buttons,text="Hint",command = self.hint, relief=FLAT, borderwidth=0)
+		imgH = PhotoImage(file="res/buttons/Hint.gif")
+		self.hintButton.config(image=imgH)
+		self.buttons.create_window(690,20, window=self.hintButton)
 		
-		self.newGameButton = Button(self.menu,text="New Game",command=self.newGame)
-		self.menu.create_window(10, 400, anchor=NW, window=self.newGameButton)
+		self.newGameButton = Button(self.buttons,text="New Game",command=self.newGame, relief=FLAT, borderwidth=0)
+		imgN = PhotoImage(file="res/buttons/NewGame.gif")
+		self.newGameButton.config(image=imgN)
+		self.buttons.create_window(110,20, window=self.newGameButton)
 
-		self.timedGameButton = Button(self.menu,text="Timed Game",command=self.timedGame)
-		self.menu.create_window(10,425,anchor=NW, window=self.timedGameButton)
+		self.timedGameButton = Button(self.buttons,text="Timed Game",command=self.timedGame, relief=FLAT, borderwidth=0)
+		imgT = PhotoImage(file="res/buttons/TimedGame.gif")
+		self.timedGameButton.config(image=imgT)
+		self.buttons.create_window(400,20, window=self.timedGameButton)
 
 		top.mainloop()
 
