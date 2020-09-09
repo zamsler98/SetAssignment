@@ -3,6 +3,7 @@
 In order to run this assignment you will need python 3.7 or greater. It should work with any older versions of python as well but those have not been tested.
 
 Pull up a terminal and navigate to the folder containing the files. Run the following command: python SET.py
+
 Alternatively, if you are on windows or mac, you can double click the file SET.py and it will run
 
 # Normal Game
