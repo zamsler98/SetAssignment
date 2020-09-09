@@ -3,6 +3,7 @@ from Deck import *
 from Sprites import *
 import random
 import time
+import winsound
 
 #Returns whether or not the three cards are a set
 def isSet(card1, card2, card3):
@@ -176,27 +177,29 @@ class GameBoard:
 			print(self.grid.cardsDisplayed.index(randSet[0]),self.grid.cardsDisplayed.index(randSet[1]),self.grid.cardsDisplayed.index(randSet[2]))
 
 	def clicked(self, event):
-	    card = self.grid.getClickedCard(event.x, event.y)
-	    if card is None:
-	    	return
-	    if card not in self.chosenCards:
-	    	self.chosenCards.append(card)
-	    	self.grid.selectCard(card)
-	    else:
-	    	self.chosenCards.remove(card)
-	    	self.grid.unselectCard(card)
-	    	return
-
-	    if len(self.chosenCards) == 3:
-	    	if isSet(self.chosenCards[0],self.chosenCards[1],self.chosenCards[2]):
-	    		self.setFound()
-	    	else:
-	    		for card in self.chosenCards:
-	    			self.grid.unselectCard(card)
-	    		self.mistakes += 1
-	    	self.chosenCards = []
+		card = self.grid.getClickedCard(event.x, event.y)
+		if card is None:
+			return
+		if card not in self.chosenCards:
+			self.chosenCards.append(card)
+			self.grid.selectCard(card)
+		else:
+			self.chosenCards.remove(card)
+			self.grid.unselectCard(card)
+			return
+		
+		if len(self.chosenCards) == 3:
+			if isSet(self.chosenCards[0],self.chosenCards[1],self.chosenCards[2]):
+				self.setFound()
+			else:
+				winsound.PlaySound("res/sounds/fail.wav", winsound.SND_ASYNC)
+				for card in self.chosenCards:
+					self.grid.unselectCard(card)
+				self.mistakes += 1
+			self.chosenCards = []
 
 	def setFound(self):
+		winsound.PlaySound("res/sounds/sucess.wav", winsound.SND_ASYNC)
 		self.timesPerSet.append(self.timer.restart())
 		if not self.grid.hasExtraCards():
 			for i in range(3):
