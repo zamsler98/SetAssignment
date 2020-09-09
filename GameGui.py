@@ -98,6 +98,8 @@ class Grid:
 						self.displayNewCard(self.cardsDisplayed[i],index)
 						self.removeCardAtIndex(i)
 						break
+			else:
+				self.removeCardAtIndex(index)
 			
 class Timer:
 	def __init__(self):
@@ -123,11 +125,11 @@ class GameBoard:
 
 		self.cardsRemainingLabel = cardsRemainingLabel
 		self.canvas = canvas
-		self.canvas.bind("t",self.test)
+		#self.canvas.bind("t",self.test)
 		self.canvas.bind("h",self.hint)
-		self.canvas.bind("x",self.extra)
+		#self.canvas.bind("x",self.extra)
 		self.canvas.bind("<Button-1>", self.clicked)
-		self.canvas.config(width=810,height=610)
+		self.canvas.config(width=845,height=610)
 
 		self.initGrid()
 
@@ -174,7 +176,7 @@ class GameBoard:
 				self.grid.unselectCard(chosenCard)
 			self.chosenCards = [randSet[1]]
 			self.grid.selectCard(self.chosenCards[0])
-			print(self.grid.cardsDisplayed.index(randSet[0]),self.grid.cardsDisplayed.index(randSet[1]),self.grid.cardsDisplayed.index(randSet[2]))
+			#print(self.grid.cardsDisplayed.index(randSet[0]),self.grid.cardsDisplayed.index(randSet[1]),self.grid.cardsDisplayed.index(randSet[2]))
 
 	def clicked(self, event):
 		card = self.grid.getClickedCard(event.x, event.y)
@@ -347,4 +349,3 @@ class GUI:
 	def hint(self):
 		self.gameBoard.hint(None)
 
-gui = GUI()
